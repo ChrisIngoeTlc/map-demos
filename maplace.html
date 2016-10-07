@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maplace</title>
+    <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=geometry&v=3.22&key=YOUR_API_KEY"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="./assets/scripts/maplace.js"></script></body>
+</head>
+<body>
+<div id="gmap" style="with:300px;height:600px;"></div>
+<div id="filler" style="height:50px;"></div>
+<div id="gmap-circles" style="with:300px;height:600px;"></div>
+<script>
+    var LocsB = [
+        {
+            lat: 51.282606,
+            lon: -0.767379,
+            title: 'Thomsonlocal',
+            html: [
+                '<h3>The Office</h3>',
+                '<p>Templar Building</p>'
+            ].join(''),
+            zoom: 14
+        },
+        {
+            lat: 51.28,
+            lon: -0.76,
+            title: 'Somewhere else',
+            html: [
+                '<h3>Place B</h3>',
+                '<p>Nowhere</p>'
+            ].join(''),
+            zoom: 14
+        },
+        {
+            lat: 51.29,
+            lon: -0.77,
+            title: 'Another Place',
+            html: [
+                '<h3>Place C</h3>',
+                '<p>Stuff</p>'
+            ].join(''),
+            zoom: 14
+        },
+        {
+            lat: 51.30,
+            lon: -0.78,
+            title: 'Yet another Place',
+            html: [
+                '<h3>Place D</h3>',
+                '<p>more stuff</p>'
+            ].join(''),
+            zoom: 14
+        }
+    ];
+
+    var Circles = [
+        {
+            lat: 51.51386,
+            lon: -0.09559,
+            title: 'Draggable marker',
+            circle_options: {
+                radius: 160
+            },
+            stroke_options: {
+                strokeColor: '#aaaa00',
+                fillColor: '#eeee00'
+            },
+            draggable: true
+        },
+        {
+            lat: 51.51420,
+            lon: -0.09303,
+            title: 'Draggable circle',
+            circle_options: {
+                radius: 50
+            },
+            stroke_options: {
+                strokeColor: '#aa0000',
+                fillColor: '#ee0000'
+            },
+            visible: false,
+            draggable: true
+        },
+        {
+            lat: 51.51498,
+            lon: -0.09097,
+            circle_options: {
+                radius: 80
+            },
+            visible: false,
+            draggable: true
+        },
+        {
+            lat: 51.51328,
+            lon: -0.09021,
+            circle_options: {
+                radius: 160,
+                editable: true
+            },
+            title: 'Editable circle',
+            html: 'Change my size',
+            visible: false,
+            draggable: true
+        },
+        {
+            lat: 51.51211,
+            lon: -0.09050,
+            circle_options: {
+                radius: 130
+            },
+            stroke_options: {
+                strokeColor: '#00aa00',
+                fillColor: '#00aa00'
+            },
+            visible: false
+        },
+        {
+            lat: 51.51226,
+            lon: -0.09435,
+            circle_options: {
+                radius: 100
+            },
+            draggable: true
+        },
+        {
+            lat: 51.513,
+            lon: -0.08410,
+            type: 'marker',
+            title: 'Simple marker',
+            html: 'I\'m a simple marker.'
+        }
+    ];
+
+    new Maplace({
+        locations: LocsB,
+        show_markers: true,
+        zoom: 14
+    }).Load();
+
+    new Maplace({
+        locations: Circles,
+        map_div: '#gmap-circles',
+        start: 4,
+        view_all_text: 'Points of interest',
+        type: 'circle',
+        shared: {
+            zoom: 16,
+            html: '%index'
+        },
+        circleRadiusChanged: function(index, point, marker) {
+            $('#radiusInfo').text(
+                    ' - point #' + (index+1) + ' size: ' + parseInt(marker.getRadius()) + 'mt.'
+            );
+        }
+    }).Load();
+
+</script>
+</html>
