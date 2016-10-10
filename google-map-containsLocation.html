@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drawing tools</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+/*    var markers = [
+        ['Test 1', 51.282606,-0.767379],
+        ['Test 2', 51.290000,-0.767385],
+        ['Test 3', 51.290000,-0.770000],
+        ['Test 4', 51.270000,-0.777381],
+        ['Test 5', 51.262640,-0.757382],
+        ['Test 6', 51.302650,-0.797383]
+    ];*/
+    var markers = [
+        {title: 'Aberdeen', lat: 51.282606, long: -0.767379, latLong: {}},
+        {title: 'Edinburgh', lat: 51.290000, long: -0.767385},
+        {title: 'Stirling', lat: 51.290000, long: -0.770000},
+        {title: 'Glasgow', lat: 51.270000, long: -0.777381},
+        {title: 'Perth', lat: 51.262640, long: -0.757382},
+        {title: 'Inverness', lat: 51.302650, long: -0.797383}
+    ];
+
+    var polygons = [];
+    var areas = [];
+
+    function initMap() {
+        var bounds = new google.maps.LatLngBounds();
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 51.282606, lng: -0.767379},
+            zoom: 12
+        });
+
+        for(var i = 0; i < markers.length; i++ ) {
+            var position = new google.maps.LatLng(markers[i].lat, markers[i].long);
+            bounds.extend(position);
+            var marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: markers[i].title
+            });
+            map.fitBounds(bounds);
+        }
+
+        var drawingManager = new google.maps.drawing.DrawingManager({
+            drawingMode: google.maps.drawing.OverlayType.MARKER,
+            drawingControl: true,
+            drawingControlOptions: {
+                position: google.maps.ControlPosition.TOP_CENTER,
+                drawingModes: ['polygon']
+            },
+            markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
+            circleOptions: {
+                fillColor: '#ffff00',
+                fillOpacity: 1,
+                strokeWeight: 5,
+                clickable: false,
+                editable: true,
+                zIndex: 1
+            }
+        });
+        google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+            polygons.push(polygon);
+            //polygon.setEditable(true);
+            //var marker = new google.maps.LatLng(markers[0].lat, markers[0].long);
+            //polygon.containsLocation(marker, polygon) ? console.log('yes') : console.log('no');
+            //var polygonBounds = polygon.getPath();
+            //var coordinates = [];
+            //for(var i = 0 ; i < polygonBounds.length ; i++)
+            //{
+            //    coordinates.push(polygonBounds.getAt(i).lat(), polygonBounds.getAt(i).lng());
+            //}
+            //console.log(coordinates);
+            //console.log(google.maps.geometry.poly.containsLocation(marker,polygon));
+            for(var j = 0; j < polygons.length; j++ ) {
+                for (var i = 0; i < markers.length; i++) {
+                    if (areas.indexOf(markers[i].title) === -1) {
+                        var position = new google.maps.LatLng(markers[i].lat, markers[i].long);
+                        if (google.maps.geometry.poly.containsLocation(position, polygon)){
+                            areas.push(markers[i].title);
+                        }
+                    }
+                }
+            }
+            console.log(areas);
+        });
+        drawingManager.setMap(map);
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=drawing" async defer></script>
+</body>
+</html>
